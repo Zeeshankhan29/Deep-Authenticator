@@ -1,7 +1,7 @@
 from pathlib import Path
-import logging
 import os
 import sys
+import logging
 
 logs_dir ='logs'
 
@@ -10,7 +10,7 @@ log_path = os.path.join(logs_dir,'running_logs.log')
 
 
 
-logging.basicConfig(level=logging.INFO,format=('[%(asctime)s]:    [%(levelname)s]:   [%(message)s]:   '),
+logging.basicConfig(level=logging.INFO,format=('[%(asctime)s] : [%(name)s] : [%(levelname)s] : [%(message)s]'),
                     handlers=[logging.FileHandler(log_path)
                               ,logging.StreamHandler(sys.stdout)])
 
