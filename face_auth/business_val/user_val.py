@@ -3,7 +3,7 @@ import sys
 from typing import Optional
 from face_auth import logging
 from passlib.context import CryptContext
-
+from face_auth.data_access.user_data import UserData
 
 bcrypt_context = CryptContext(schemes=['bcrypt'],deprecated='auto')
 
@@ -37,11 +37,9 @@ class Loginvalidation:
     def email_valid(self) -> bool:
         try:
             if re.findall(self.pattern,self.email):
-                logging.info('Email is valid')
                 return True
         
             else:
-                logging.info('Email is not valid')
                 return False
         except Exception as e:
             logging.exception(e)
@@ -68,15 +66,35 @@ class Loginvalidation:
             logging.exception(e)
 
 
+    def authenticate_user_login(self)->Optional[str]:
+        try:
+            logging.info('Authenticating User Login!!!')
+            if self.validate_login()['status']:
+                user = UserData(self.email)
+                logging.info('Fetching the data from Database!!!')
+                user_login_val = user.user_data()
+                if not user_login_val:
+                    logging.info('User does not exists in the database')
+                    return False
+                
+                if not self.verify_password(self.password,user_login_val['password']):
+                    logging.info('Details provided wrong, Wrong Password')
+                    return False
+                
+                logging.info('User authenticated succesfully')
+                return False
 
+
+        except Exception as e:
+            logging.exception(e)
     
 
 
 
 
 if __name__=='__main__':
-    ob = Loginvalidation('llkj@gmail.yahoo',256)
-    ob.email_valid()
+    ob = Loginvalidation('interview','Pass')
+    ob.authenticate_user_login()
 
 
 
